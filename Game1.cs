@@ -13,6 +13,7 @@ namespace Pong
         private ManagerInput _managerInput;
         private ManagerPlayers _managerPlayers;
         private ManagerEnemies _managerEnemies;
+        private ManagerMissles _managerMissles;
 
         
         public Game1()
@@ -23,6 +24,7 @@ namespace Pong
             _managerInput = new ManagerInput();
             _managerPlayers = new ManagerPlayers(_managerNetwork);
             _managerEnemies = new ManagerEnemies(_managerNetwork);
+            _managerMissles = new ManagerMissles(_managerNetwork);
             IsMouseVisible = true;
         }
 
@@ -41,6 +43,7 @@ namespace Pong
             //ballTexture = Content.Load<Texture2D>("ball");
             _managerPlayers.LoadContent(Content);
             _managerEnemies.LoadContent(Content);
+            _managerMissles.LoadContent(Content);
             _managerNetwork.Start();
         }
 
@@ -54,7 +57,7 @@ namespace Pong
             _managerInput.Update(gameTime.ElapsedGameTime.Milliseconds);
             _managerPlayers.Update(gameTime.ElapsedGameTime.Milliseconds);
             _managerEnemies.Update(gameTime.ElapsedGameTime.Milliseconds);
-
+            _managerMissles.Update(gameTime.ElapsedGameTime.Milliseconds);
             base.Update(gameTime);
         }
 
@@ -69,6 +72,7 @@ namespace Pong
             {
                 _managerPlayers.Draw(_spriteBatch);
                 _managerEnemies.Draw(_spriteBatch);
+                _managerMissles.Draw(_spriteBatch);
             }
             _spriteBatch.End();
 

@@ -41,6 +41,7 @@ namespace Pong.Components
                 case Input.Enter:
                     break;
                 case Input.A:
+                    ManagerNetwork.SendInput(Keys.A);
                     break;
                 case Input.S:
                     break;

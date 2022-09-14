@@ -27,6 +27,7 @@ namespace Pong.Manager
         public event EventHandler<PlayerUpdateEventArgs> PlayerUpdateEvent;
         public event EventHandler<KickPlayerEventArgs> KickPlayerEvent;
         public event EventHandler<EnemyUpdateEventArgs> EnemyUpdateEvent;
+        public event EventHandler<MissleUpdateEventArgs> MissleUpdateEvent;
 
         public bool Start()
         {
@@ -111,6 +112,10 @@ namespace Pong.Manager
                     ReceiveAllEnemies(inc);
                     break;
 
+                case PacketType.AllMissles:
+                    ReceiveAllMissles(inc);
+                    break;
+
                 case PacketType.Login:
                     ReceiveAllPlayers(inc);
                     break;
@@ -147,6 +152,22 @@ namespace Pong.Manager
             }
         }
 
+        private void ReceiveAllMissles(NetIncomingMessage inc)
+        {
+            var list = new List<Missle>();
+            var cameraUpdate = inc.ReadBoolean();
+            var count = inc.ReadInt32();
+            for (int n = 0; n < count; n++)
+            {
+                list.Add(ReadMissle(inc));
+            }
+
+            if (MissleUpdateEvent != null)
+            {
+                MissleUpdateEvent(this, new MissleUpdateEventArgs(list, cameraUpdate));
+            }
+        }
+
         private void ReceiveAllEnemies(NetIncomingMessage inc)
         {
             var list = new List<Enemy>();
@@ -169,6 +190,15 @@ namespace Pong.Manager
             player.Username = inc.ReadString();
             inc.ReadAllProperties(player.Position);
             return player;
+        }
+
+        private Missle ReadMissle(NetIncomingMessage inc)
+        {
+            var missle = new Missle();
+            missle.UniqueId = inc.ReadInt32();
+            missle.MissleId = inc.ReadInt32();
+            inc.ReadAllProperties(missle.Position);
+            return missle;
         }
 
         private Enemy ReadEnemy(NetIncomingMessage inc)
