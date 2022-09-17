@@ -21,6 +21,14 @@ namespace Pong.Manager
             _players = new List<BaseObject>();
             _managerNetwork = managerNetwork;
             managerNetwork.PlayerUpdateEvent += PlayerUpdate;
+            managerNetwork.KickPlayerEvent += KickPlayerUpdate;
+        }
+
+        void KickPlayerUpdate(object sender, MyEventArgs.KickPlayerEventArgs e)
+        {
+            var itemToRemove = _players.Single(p => p.Username == e.Username);
+            var sprite = itemToRemove.GetComponent<Sprite>(ComponentType.Sprite);
+            sprite.HideSprite();
         }
 
         void PlayerUpdate(object sender, MyEventArgs.PlayerUpdateEventArgs e)
@@ -43,7 +51,7 @@ namespace Pong.Manager
         private void CreateObject(Player player)
         {
             var baseObject = new BaseObject { Username = player.Username };
-            baseObject.AddComponent(new Sprite(_texture, 16, 16, new Vector2(player.Position.ScreenXPosition, player.Position.ScreenYPosition), Color.White, player.Position.Visible));
+            baseObject.AddComponent(new Sprite(_texture, 32, 32, new Vector2(player.Position.ScreenXPosition, player.Position.ScreenYPosition), Color.White, player.Position.Visible));
             baseObject.AddComponent(new MyAnimation(16, 16, 2));
             if (player.Username == _managerNetwork.Username)
             {

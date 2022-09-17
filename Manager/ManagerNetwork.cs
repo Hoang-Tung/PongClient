@@ -198,6 +198,7 @@ namespace Pong.Manager
             missle.UniqueId = inc.ReadInt32();
             missle.MissleId = inc.ReadInt32();
             inc.ReadAllProperties(missle.Position);
+            inc.ReadAllProperties(missle.direction);
             return missle;
         }
 
@@ -213,10 +214,11 @@ namespace Pong.Manager
         private void ReceiveKick(NetIncomingMessage inc)
         {
             var username = inc.ReadString();
-            if (KickPlayerEvent != null)
-            {
-                KickPlayerEvent(this, new KickPlayerEventArgs(username));
-            }
+            KickPlayerEvent(this, new KickPlayerEventArgs(username));
+            //if (KickPlayerEvent != null)
+            //{
+            //    KickPlayerEvent(this, new KickPlayerEventArgs(username));
+            //}
         }
 
         public void SendInput(Keys key)

@@ -116,6 +116,11 @@ namespace Pong.Components
 
         }
 
+        public void HideSprite()
+        {
+            Visible = false;
+        }
+
         public void UpdatePosition(Entity entity, bool cameraUpdate)
         {
             if (cameraUpdate)
