@@ -17,7 +17,7 @@ namespace Pong.MyEventArgs
         public bool CameraUpdate { get; set; }
 
         public EnemyUpdateEventArgs(List<Enemy> enemies, bool cameraUpdate)
-        {
+        {   
             Enemies = enemies;
             CameraUpdate = cameraUpdate;
         }

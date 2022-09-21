@@ -28,7 +28,7 @@ namespace Pong.Manager
         {
             var itemToRemove = _players.Single(p => p.Username == e.Username);
             var sprite = itemToRemove.GetComponent<Sprite>(ComponentType.Sprite);
-            sprite.HideSprite();
+            sprite.RemoveMe();
         }
 
         void PlayerUpdate(object sender, MyEventArgs.PlayerUpdateEventArgs e)

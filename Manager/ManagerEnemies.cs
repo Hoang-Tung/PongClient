@@ -11,7 +11,7 @@ namespace Pong.Manager
 {
     class ManagerEnemies
     {
-        private List<BaseObject> _enemies;
+        private List<BaseObject> _enemies;//
         private ManagerNetwork _managerNetwork;
         private Texture2D _texture;
         private SpriteFont _font;
@@ -21,6 +21,14 @@ namespace Pong.Manager
             _enemies = new List<BaseObject>();
             _managerNetwork = managerNetwork;
             _managerNetwork.EnemyUpdateEvent += EnemyUpdate;
+            _managerNetwork.KickEnemyEvent += KickEnemyUpdate;
+        }
+
+        void KickEnemyUpdate(object sender, MyEventArgs.KickEnemyEventArgs e)
+        {
+            var itemToRemove = _enemies.Single(p => p.Username == e.UniqueId.ToString());
+            var sprite = itemToRemove.GetComponent<Sprite>(ComponentType.Sprite);
+            sprite.HideSprite();
         }
 
         void EnemyUpdate(object sender, MyEventArgs.EnemyUpdateEventArgs e)
@@ -56,9 +64,9 @@ namespace Pong.Manager
         }
 
         public void Update(double gameTime)
-        {
+        { 
             foreach (var baseObject in _enemies)
-            {
+            {    
                 baseObject.Update(gameTime);
             }
         }
@@ -66,8 +74,8 @@ namespace Pong.Manager
         public void Draw(SpriteBatch spriteBatch)
         {
             foreach (var baseObject in _enemies)
-            {
-                baseObject.Draw(spriteBatch);
+            {  
+               baseObject.Draw(spriteBatch);
             }
         }
     }

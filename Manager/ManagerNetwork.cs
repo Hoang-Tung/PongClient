@@ -28,6 +28,7 @@ namespace Pong.Manager
         public event EventHandler<KickPlayerEventArgs> KickPlayerEvent;
         public event EventHandler<EnemyUpdateEventArgs> EnemyUpdateEvent;
         public event EventHandler<MissleUpdateEventArgs> MissleUpdateEvent;
+        public event EventHandler<KickEnemyEventArgs> KickEnemyEvent;
 
         public bool Start()
         {
@@ -106,6 +107,10 @@ namespace Pong.Manager
 
                 case PacketType.Kick:
                     ReceiveKick(inc);
+                    break;
+
+                case PacketType.KickEnemy:
+                    ReceiveKickEnemy(inc);
                     break;
 
                 case PacketType.AllEnemies:
@@ -215,10 +220,12 @@ namespace Pong.Manager
         {
             var username = inc.ReadString();
             KickPlayerEvent(this, new KickPlayerEventArgs(username));
-            //if (KickPlayerEvent != null)
-            //{
-            //    KickPlayerEvent(this, new KickPlayerEventArgs(username));
-            //}
+        }
+
+        private void ReceiveKickEnemy(NetIncomingMessage inc)
+        {
+            var UniqueId = inc.ReadInt32();
+            KickEnemyEvent(this, new KickEnemyEventArgs(UniqueId));
         }
 
         public void SendInput(Keys key)
