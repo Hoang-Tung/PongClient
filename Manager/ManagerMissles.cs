@@ -24,11 +24,23 @@ namespace Pong.Manager
             _managerNetwork.MissleUpdateEvent += MissleUpdate;
         }
 
+        void HideMissle(int UniqueId)
+        {
+            var itemToRemove = _missles.Single(p => p.Username == UniqueId.ToString());
+            var sprite = itemToRemove.GetComponent<Sprite>(ComponentType.Sprite);
+            sprite.HideSprite();
+        }
+
         void MissleUpdate(object sender, MyEventArgs.MissleUpdateEventArgs e)
         {
             foreach (var missle in e.Missles)
             {
                 var baseObject = _missles.FirstOrDefault(mi => mi.Username == missle.UniqueId.ToString());
+                if (missle.isHidden)
+                {
+                    HideMissle(missle.UniqueId);
+                    continue;
+                }
                 if (baseObject != null)
                 {
                     var sprite = baseObject.GetComponent<Sprite>(ComponentType.Sprite);

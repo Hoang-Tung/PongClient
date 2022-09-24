@@ -6,6 +6,7 @@
 //------------------------------------------------------
 
 using Microsoft.Xna.Framework.Graphics;
+using LetsCreateNetworkGame.OpenGL.Library;
 
 namespace Pong
 {
@@ -24,6 +25,13 @@ namespace Pong
             if (_baseObject == null)
                 return "";
             return _baseObject.Username;
+        }
+
+        public int GetUserPoint()
+        {
+            if (_baseObject == null)
+                return 0;
+            return _baseObject.point;
         }
 
         public void RemoveMe()

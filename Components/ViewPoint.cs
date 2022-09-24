@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Pong.Components
 {
-    class Name : Componentss
+    class ViewPoint : Componentss
     {
         public override ComponentType ComponentType
         {
@@ -12,14 +12,14 @@ namespace Pong.Components
 
         private SpriteFont _font;
 
-        public Name(SpriteFont font)
+        public ViewPoint(SpriteFont font)
         {
             _font = font;
         }
 
         public override void Update(double gameTime)
         {
-
+            
         }
 
         public override void Draw(SpriteBatch spritebatch)
@@ -28,7 +28,9 @@ namespace Pong.Components
             if (sprite == null)
                 return;
             var i = GetOwnerId();
-            spritebatch.DrawString(_font, string.Format("<{0}> <{0}>", GetOwnerId(), GetUserPoint()), new Vector2(sprite.Position.X - 10, sprite.Position.Y - 10), Color.Black);
+            spritebatch.DrawString(_font, string.Format("<{0}>", GetUserPoint()), new Vector2(sprite.Position.X + 10, sprite.Position.Y - 10), Color.Black);
         }
+
+
     }
 }

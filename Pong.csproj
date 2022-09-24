@@ -26,7 +26,7 @@
   </ItemGroup>
   <ItemGroup>
     <Reference Include="LetsCreateNetworkGame.OpenGL.Library">
-      <HintPath>D:\software\SpeedCodingNetworkGame-master\LetsCreateNetworkGame.OpenGL.Library\obj\Debug\LetsCreateNetworkGame.OpenGL.Library.dll</HintPath>
+      <HintPath>..\speedcodegameserver-add-missle\LetsCreateNetworkGame.OpenGL.Library\bin\Debug\LetsCreateNetworkGame.OpenGL.Library.dll</HintPath>
     </Reference>
   </ItemGroup>
   <Target Name="RestoreDotnetTools" BeforeTargets="Restore">

@@ -15,6 +15,8 @@ namespace Pong
         public string Username { get; set; }
         public bool Kill { get; set; }
 
+        public int point { get; set; }
+
         private readonly List<Componentss> _components;
 
         public BaseObject()

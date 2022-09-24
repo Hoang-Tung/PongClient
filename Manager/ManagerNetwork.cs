@@ -29,6 +29,7 @@ namespace Pong.Manager
         public event EventHandler<EnemyUpdateEventArgs> EnemyUpdateEvent;
         public event EventHandler<MissleUpdateEventArgs> MissleUpdateEvent;
         public event EventHandler<KickEnemyEventArgs> KickEnemyEvent;
+        public event EventHandler<ObstacleUpdateEventArgs> ObstacleUpdateEvent;
 
         public bool Start()
         {
@@ -120,7 +121,9 @@ namespace Pong.Manager
                 case PacketType.AllMissles:
                     ReceiveAllMissles(inc);
                     break;
-
+                case PacketType.AllObstacles:
+                    ReceiveAllObstacles(inc);
+                    break;
                 case PacketType.Login:
                     ReceiveAllPlayers(inc);
                     break;
@@ -173,6 +176,22 @@ namespace Pong.Manager
             }
         }
 
+        private void ReceiveAllObstacles(NetIncomingMessage inc)
+        {
+            var list = new List<Obstacle>();
+            var cameraUpdate = inc.ReadBoolean();
+            var count = inc.ReadInt32();
+            for (int n = 0; n < count; n++)
+            {
+                list.Add(ReadObstacle(inc));
+            }
+
+            if (ObstacleUpdateEvent != null)
+            {
+                ObstacleUpdateEvent(this, new ObstacleUpdateEventArgs(list, cameraUpdate));
+            }
+        }
+
         private void ReceiveAllEnemies(NetIncomingMessage inc)
         {
             var list = new List<Enemy>();
@@ -193,6 +212,7 @@ namespace Pong.Manager
         {
             var player = new Player();
             player.Username = inc.ReadString();
+            player.point = inc.ReadInt32();
             inc.ReadAllProperties(player.Position);
             return player;
         }
@@ -202,11 +222,20 @@ namespace Pong.Manager
             var missle = new Missle();
             missle.UniqueId = inc.ReadInt32();
             missle.MissleId = inc.ReadInt32();
+            missle.isHidden = inc.ReadBoolean();
             inc.ReadAllProperties(missle.Position);
             inc.ReadAllProperties(missle.direction);
             return missle;
         }
 
+        private Obstacle ReadObstacle(NetIncomingMessage inc)
+        {
+            var obstacle = new Obstacle();
+            obstacle.UniqueId = inc.ReadInt32();
+            obstacle.ObstacleId = inc.ReadInt32();
+            inc.ReadAllProperties(obstacle.Position);
+            return obstacle;
+        }
         private Enemy ReadEnemy(NetIncomingMessage inc)
         {
             var enemy = new Enemy();

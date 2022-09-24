@@ -38,6 +38,7 @@ namespace Pong.Manager
                 var baseObject = _players.FirstOrDefault(b => b.Username == player.Username);
                 if (baseObject != null)
                 {
+                    baseObject.point = player.point;
                     var sprite = baseObject.GetComponent<Sprite>(ComponentType.Sprite);
                     sprite.UpdatePosition(player, e.CameraUpdate);
                 }
@@ -56,10 +57,12 @@ namespace Pong.Manager
             if (player.Username == _managerNetwork.Username)
             {
                 baseObject.AddComponent(new MainPlayer(_managerNetwork));
+                baseObject.AddComponent(new ViewPoint(_font));
             }
             else
             {
                 baseObject.AddComponent(new Name(_font));
+                baseObject.AddComponent(new ViewPoint(_font));
             }
             _players.Add(baseObject);
         }
