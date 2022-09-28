@@ -22,6 +22,20 @@ namespace Pong.Manager
             _managerNetwork = managerNetwork;
             managerNetwork.PlayerUpdateEvent += PlayerUpdate;
             managerNetwork.KickPlayerEvent += KickPlayerUpdate;
+            managerNetwork.ChangeMapEvent += PlayerChangeMap;
+        }
+
+        void PlayerChangeMap(object sender, MyEventArgs.ChangeMapEvent e)
+        {
+            foreach (BaseObject player in _players)
+            {
+                if(player.Username != e.UserName)
+                {
+                    var sprite = player.GetComponent<Sprite>(ComponentType.Sprite);
+                    sprite.RemoveMe();
+                }
+            }
+            _players.RemoveAll(p => p.Username != e.UserName);
         }
 
         void KickPlayerUpdate(object sender, MyEventArgs.KickPlayerEventArgs e)

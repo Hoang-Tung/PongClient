@@ -30,6 +30,7 @@ namespace Pong.Manager
         public event EventHandler<MissleUpdateEventArgs> MissleUpdateEvent;
         public event EventHandler<KickEnemyEventArgs> KickEnemyEvent;
         public event EventHandler<ObstacleUpdateEventArgs> ObstacleUpdateEvent;
+        public event EventHandler<ChangeMapEvent> ChangeMapEvent;
 
         public bool Start()
         {
@@ -101,7 +102,14 @@ namespace Pong.Manager
                         PlayerUpdateEvent(this, new PlayerUpdateEventArgs(new List<Player> { player }, false));
                     }
                     break;
-
+                case PacketType.ChangeGRoom:
+                    var newRoom = ReadNewRoom(inc);
+                    GroupId = newRoom.GameRoomID;
+                    if (ChangeMapEvent != null)
+                    {
+                        ChangeMapEvent(this, new ChangeMapEvent(GroupId, newRoom.Username));
+                    }
+                    break;
                 case PacketType.AllPlayers:
                     ReceiveAllPlayers(inc);
                     break;
@@ -149,14 +157,18 @@ namespace Pong.Manager
             var list = new List<Player>();
             var cameraUpdate = inc.ReadBoolean();
             var count = inc.ReadInt32();
-            for (int n = 0; n < count; n++)
+            var gameroomId = inc.ReadString();
+            if(gameroomId == GroupId)
             {
-                list.Add(ReadPlayer(inc));
-            }
+                for (int n = 0; n < count; n++)
+                {
+                    list.Add(ReadPlayer(inc));
+                }
 
-            if (PlayerUpdateEvent != null)
-            {
-                PlayerUpdateEvent(this, new PlayerUpdateEventArgs(list, cameraUpdate));
+                if (PlayerUpdateEvent != null)
+                {
+                    PlayerUpdateEvent(this, new PlayerUpdateEventArgs(list, cameraUpdate));
+                }
             }
         }
 
@@ -165,14 +177,18 @@ namespace Pong.Manager
             var list = new List<Missle>();
             var cameraUpdate = inc.ReadBoolean();
             var count = inc.ReadInt32();
-            for (int n = 0; n < count; n++)
+            var gameroomId = inc.ReadString();
+            if(gameroomId == GroupId)
             {
-                list.Add(ReadMissle(inc));
-            }
+                for (int n = 0; n < count; n++)
+                {
+                    list.Add(ReadMissle(inc));
+                }
 
-            if (MissleUpdateEvent != null)
-            {
-                MissleUpdateEvent(this, new MissleUpdateEventArgs(list, cameraUpdate));
+                if (MissleUpdateEvent != null)
+                {
+                    MissleUpdateEvent(this, new MissleUpdateEventArgs(list, cameraUpdate));
+                }
             }
         }
 
@@ -181,6 +197,7 @@ namespace Pong.Manager
             var list = new List<Obstacle>();
             var cameraUpdate = inc.ReadBoolean();
             var count = inc.ReadInt32();
+
             for (int n = 0; n < count; n++)
             {
                 list.Add(ReadObstacle(inc));
@@ -197,14 +214,18 @@ namespace Pong.Manager
             var list = new List<Enemy>();
             var cameraUpdate = inc.ReadBoolean();
             var count = inc.ReadInt32();
-            for (int n = 0; n < count; n++)
+            var gameroomId = inc.ReadString();
+            if(gameroomId == GroupId)
             {
-                list.Add(ReadEnemy(inc));
-            }
+                for (int n = 0; n < count; n++)
+                {
+                    list.Add(ReadEnemy(inc));
+                }
 
-            if (EnemyUpdateEvent != null)
-            {
-                EnemyUpdateEvent(this, new EnemyUpdateEventArgs(list, cameraUpdate));
+                if (EnemyUpdateEvent != null)
+                {
+                    EnemyUpdateEvent(this, new EnemyUpdateEventArgs(list, cameraUpdate));
+                }
             }
         }
 
@@ -213,6 +234,16 @@ namespace Pong.Manager
             var player = new Player();
             player.Username = inc.ReadString();
             player.point = inc.ReadInt32();
+            inc.ReadAllProperties(player.Position);
+            return player;
+        }
+
+        private Player ReadNewRoom(NetIncomingMessage inc)
+        {
+            var player = new Player();
+            player.Username = inc.ReadString();
+            player.point = inc.ReadInt32();
+            player.GameRoomID = inc.ReadString();
             inc.ReadAllProperties(player.Position);
             return player;
         }
@@ -248,7 +279,9 @@ namespace Pong.Manager
         private void ReceiveKick(NetIncomingMessage inc)
         {
             var username = inc.ReadString();
-            KickPlayerEvent(this, new KickPlayerEventArgs(username));
+            var gameroomId = inc.ReadString();
+            if (gameroomId == GroupId)
+                KickPlayerEvent(this, new KickPlayerEventArgs(username));
         }
 
         private void ReceiveKickEnemy(NetIncomingMessage inc)
